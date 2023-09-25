@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QWidget
 
 from piekit.managers.structs import Section
 from piekit.managers.structs import SysManager
-from piekit.managers.base import BaseManager
+from piekit.managers.managers import BaseManager
 from piekit.exceptions import PieException
 from piekit.widgets.toolbars import PieToolBar
 

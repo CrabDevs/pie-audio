@@ -6,7 +6,7 @@ from typing import Union
 from piekit.globals import Global
 from piekit.utils.logger import logger
 from piekit.utils.modules import import_by_path
-from piekit.managers.base import PluginBaseManager
+from piekit.managers.managers import PluginBaseManager
 from piekit.managers.structs import SysManager
 from piekit.managers.confpages.structs import ConfigPage
 

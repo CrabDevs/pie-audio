@@ -10,7 +10,7 @@ from pieapp.structs.plugins import Plugin
 from pieapp.structs.workbench import WorkbenchItem
 
 from piekit.globals import Global
-from piekit.managers.base import BaseManager
+from piekit.managers.managers import BaseManager
 from piekit.managers.layouts.mixins import LayoutsAccessorMixin
 from piekit.managers.registry import Managers
 from piekit.managers.structs import Section

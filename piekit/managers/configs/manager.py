@@ -6,7 +6,7 @@ from dotty_dict import Dotty
 
 from piekit.globals import Global
 from piekit.exceptions import PieException
-from piekit.managers.base import PluginBaseManager
+from piekit.managers.managers import PluginBaseManager
 from piekit.managers.structs import Section
 from piekit.managers.structs import SysManager
 from piekit.utils.files import read_json, write_json

@@ -25,7 +25,7 @@ class SysManager:
     Menus = "menus"
 
     # ToolButtonManager
-    ToolButton = "toolbuttons"
+    ToolButtons = "toolbuttons"
 
     # ToolBarManager
     ToolBars = "toolbar"

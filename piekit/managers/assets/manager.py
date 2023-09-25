@@ -6,7 +6,7 @@ from piekit.globals import Global
 from piekit.utils.logger import logger
 from piekit.managers.structs import Section
 from piekit.managers.registry import Managers
-from piekit.managers.base import PluginBaseManager
+from piekit.managers.managers import PluginBaseManager
 from piekit.managers.structs import SysManager, DirectoryType
 
 

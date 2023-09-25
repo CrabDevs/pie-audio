@@ -4,7 +4,7 @@ from pathlib import Path
 from piekit.utils.logger import logger
 from piekit.utils.files import read_json
 from piekit.utils.modules import import_by_string
-from piekit.managers.base import PluginBaseManager, BaseManager
+from piekit.managers.managers import PluginBaseManager, BaseManager
 from piekit.managers.structs import ManagerConfig
 
 

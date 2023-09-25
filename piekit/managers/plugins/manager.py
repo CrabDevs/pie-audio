@@ -16,7 +16,7 @@ from piekit.globals import Global
 from piekit.exceptions import PieException
 from piekit.plugins.types import PluginType
 from piekit.plugins.plugins import PiePlugin
-from piekit.managers.base import BaseManager
+from piekit.managers.managers import BaseManager
 from piekit.managers.registry import Managers
 from piekit.managers.structs import SysManager
 
