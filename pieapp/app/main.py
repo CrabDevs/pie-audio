@@ -33,10 +33,10 @@ class MainWindow(
 
     # Plugin signals
     sig_plugins_ready = Signal()
-    sig_plugin_ready = Signal(str)
-    sig_plugin_loading = Signal(str)
-    sig_plugin_reloading = Signal(str)
-    sig_restart_requested = Signal(str)
+    sig_plugin_ready = Signal()
+    sig_plugin_loading = Signal()
+    sig_plugin_reloading = Signal()
+    sig_restart_requested = Signal()
 
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent=parent)
@@ -59,15 +59,15 @@ class MainWindow(
         self.sig_exception_occurred.connect(self.error_handler)
 
     def prepare_main_window(self) -> None:
-        self.set_minimum_size(*Global.MAIN_WINDOW_MIN_WINDOW_SIZE)
+        self.set_minimum_size(*Global.DEFAULT_MIN_WINDOW_SIZE)
         self.resize(*self.get_config(
             key="ui.winsize",
-            default=Global.MAIN_WINDOW_MIN_WINDOW_SIZE,
+            default=Global.DEFAULT_MIN_WINDOW_SIZE,
             scope=Section.Root,
             section=Section.User
         ))
         self.set_window_title(
-            f'{self.get_translation("Pie Audio • Audio Converter")} '
+            f'{self.get_translation("Pie Audio • Simple Audio Editor")} '
             f'({Global.PIEAPP_APPLICATION_VERSION})'
         )
         self.set_window_icon(self.get_svg_icon("cloud.svg"))

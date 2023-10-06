@@ -22,7 +22,7 @@ from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
 from piekit.managers.toolbars.mixins import ToolBarAccessorMixin
 from piekit.managers.toolbuttons.mixins import ToolButtonAccessorMixin
-from piekit.managers.plugins.decorators import on_plugin_available
+from piekit.managers.plugins.decorators import on_plugin_event
 
 from PySide6.QtWidgets import QGridLayout, QDialog, QTreeWidget, QLabel, QDialogButtonBox
 
@@ -34,7 +34,7 @@ class Settings(
     MenuAccessorMixin, ToolBarAccessorMixin, ToolButtonAccessorMixin,
 ):
     name = Plugin.Settings
-    requires = [Plugin.MenuBar, Plugin.Workbench]
+    requires = [Plugin.MenuBar]
 
     def init(self) -> None:
         # Main window dialog
@@ -158,8 +158,8 @@ class Settings(
         for page in pages:
             page["page"].accept()
 
-    @on_plugin_available(target=Plugin.MenuBar)
-    def _on_menu_bar_available(self) -> None:
+    @on_plugin_event(target=Plugin.MenuBar)
+    def on_menu_bar_available(self) -> None:
         self.add_menu_item(
             section=Section.Shared,
             menu=MainMenu.File,

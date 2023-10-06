@@ -2,7 +2,7 @@
 Base manager
 """
 from pathlib import Path
-from typing import Any
+from typing import Any, Self
 from PySide6.QtCore import QObject
 
 from piekit.exceptions import PieException
@@ -38,7 +38,7 @@ class BaseManager:
         return f'({self.__class__.__name__}) <id: {id(self)}>'
 
 
-class PluginBaseManager(BaseManager):
+class PluginManagerMixin:
 
     def init_plugin(self, plugin_folder: Path) -> None:
         raise NotImplementedError(f"Method `init_plugin` must be implemented")
@@ -53,13 +53,12 @@ class PluginBaseManager(BaseManager):
         pass
 
 
-class ReferenceManager(BaseManager):
+class ReferenceManagerMixin:
 
-    def __init__(
-        self,
-        manager_name: str,
-        dict_type: dict = None
-    ) -> None:
+    def __new__(cls: type[Self]) -> Self:
+        pass
+
+    def __init__(self, manager_name: str, dict_type: dict = None) -> None:
         """
         Args:
             manager_name (str): name of the manager

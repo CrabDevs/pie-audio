@@ -1,5 +1,5 @@
 from piekit.managers.structs import SysManager
-from piekit.managers.managers import ReferenceManager
+from piekit.managers.managers import ReferenceManagerMixin
 
 
-LayoutManager = ReferenceManager(SysManager.Layouts)
+LayoutManager = ReferenceManagerMixin(SysManager.Layouts)

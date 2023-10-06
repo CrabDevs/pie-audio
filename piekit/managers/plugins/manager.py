@@ -6,6 +6,7 @@ import sys
 
 from pathlib import Path
 
+from PySide6.QtCore import Signal
 from version_parser import Version
 
 from piekit.utils.logger import logger
@@ -72,12 +73,6 @@ class PluginManager(BaseManager):
             if plugin in self._plugin_registry:
                 self._shutdown_plugin(plugin)
 
-        self._plugin_dependents = {}
-        self._plugin_dependencies = {}
-        self._plugin_registry = {}
-        self._plugin_availability = {}
-        self._plugin_managers = []
-
     def reload(self, *plugins: str, full_house: bool = False) -> None:
         """ Reload listed or all objects and components """
         self.shutdown(*plugins, full_house=full_house)
@@ -89,11 +84,11 @@ class PluginManager(BaseManager):
         """ Get PiePlugin instance by its name """
         return self._plugin_registry.get(key)
 
-    # PluginManager protected methods
+    # Prepare methods
 
     def _initialize_from_packages(
-        self, 
-        folder: "Path", 
+        self,
+        folder: "Path",
         parent: "QMainWindow" = None
     ) -> None:
         if not folder.exists():
@@ -121,7 +116,6 @@ class PluginManager(BaseManager):
                 # Setup plugin via `PluginManager`
                 for plugin_manager in self._plugin_managers:
                     plugin_manager.init_plugin(plugin_path)
-                    plugin_manager.on_post_init_plugin(plugin_path)
 
                 # Initializing plugin instance
                 plugin_instance: PiePlugin = getattr(plugin_module, "main")(parent, plugin_path)
@@ -150,7 +144,7 @@ class PluginManager(BaseManager):
                                  f"{plugin_package.name} version ({plugin_package.piekit_version})")
 
     def _initialize_plugin(self, plugin_instance: PiePlugin) -> None:
-        self._logger.info(f"Preparing {plugin_instance.type.value} {plugin_instance.name}")
+        self._logger.info(f"Preparing plugin {plugin_instance.name}")
 
         self._update_plugin_info(
             plugin_instance.name,
@@ -162,12 +156,14 @@ class PluginManager(BaseManager):
         self._plugin_registry[plugin_instance.name] = plugin_instance
         self._plugins_types_registry[plugin_instance.type.value].add(plugin_instance.name)
 
-        plugin_instance.sig_plugin_ready.connect(
-            lambda: (
-                self._notify_plugin_availability(plugin_instance.name),
-                self._notify_plugin_availability_on_main(plugin_instance.name)
-            )
-        )
+        plugin_signals = self._get_plugin_signals(plugin_instance)
+        for signal_name in plugin_signals:
+            signal_instance = getattr(plugin_instance, signal_name)
+            signal_instance.connect(lambda: self._notify_plugin_event(
+                plugin_instance.name, set(map(lambda v: v.replace("sig_", ""), plugin_signals))
+            ))
+
+        plugin_instance.sig_plugin_ready.connect(lambda: self._notify_plugin_availability(plugin_instance.name))
 
         # Preparing `PiePlugin` instance
         try:
@@ -181,7 +177,33 @@ class PluginManager(BaseManager):
         self._notify_plugin_dependencies(plugin_instance.name)
 
         # Inform about that
-        self._logger.info(f"{plugin_instance.type.value.capitalize()} {plugin_instance.name} is ready")
+        self._logger.info(f"Plugin \"{plugin_instance.name}\" is ready")
+
+    def _get_plugin_signals(self, plugin_instance: PiePlugin) -> list[str]:
+        """
+        Collect signals names from plugin instance that starts with `sig_` prefix
+        """
+        signals: list[str] = []
+        for signal_name in dir(plugin_instance):
+            if signal_name.startswith("sig_") and signal_name != "sig_plugin_ready":
+                signal_instance = getattr(plugin_instance, signal_name, None)
+                if isinstance(signal_instance, Signal):
+                    signals.append(signal_name)
+
+        return signals
+
+    # Notification methods
+
+    def _notify_plugin_event(self, name: str, signals: set[str] = None) -> None:
+        plugin_dependents = self._plugin_dependents.get(name, {})
+        required_plugins = plugin_dependents.get("requires", [])
+        optional_plugins = plugin_dependents.get("optional", [])
+
+        for plugin in required_plugins + optional_plugins:
+            if plugin in self._plugin_registry:
+                plugin_instance = self._plugin_registry[plugin]
+                for signal in signals:
+                    plugin_instance.on_plugin_event(name, signal)
 
     def _notify_plugin_availability(
         self,
@@ -203,42 +225,7 @@ class PluginManager(BaseManager):
         for plugin in required_plugins + optional_plugins:
             if plugin in self._plugin_registry:
                 plugin_instance = self._plugin_registry[plugin]
-                plugin_instance.on_plugin_available(name)
-
-    def _notify_plugin_availability_on_main(self, name: str) -> None:
-        plugin_instance = self._plugin_registry.get(name)
-        if plugin_instance:
-            plugin_instance.parent().sig_plugin_ready.emit(name)
-
-    def _notify_plugin_shutdown(self, plugin_name: str):
-        """
-        Notify dependents of a plugin that is going to be unavailable
-        """
-        plugin_dependents = self._plugin_dependents.get(plugin_name, {})
-        required_plugins = plugin_dependents.get("requires", [])
-        optional_plugins = plugin_dependents.get("optional", [])
-
-        for plugin in required_plugins + optional_plugins:
-            if plugin in self._plugin_registry:
-                if self._plugin_availability.get(plugin, False):
-                    logger.debug(f"Notifying plugin {plugin} that {plugin_name} is going to be turned off")
-                    plugin_instance = self._plugin_registry[plugin]
-                    plugin_instance.on_plugin_shutdown(plugin_name)
-
-    def _shutdown_plugin(self, plugin_name: str):
-        """
-        Disconnect a plugin from its dependencies
-        """
-        plugin_instance = self._plugin_registry[plugin_name]
-        plugin_dependencies = self._plugin_dependencies.get(plugin_name, {})
-        required_plugins = plugin_dependencies.get("requires", [])
-        optional_plugins = plugin_dependencies.get("optional", [])
-
-        for plugin in required_plugins + optional_plugins:
-            if plugin in self._plugin_registry:
-                if self._plugin_availability.get(plugin, False):
-                    logger.debug(f"Disconnecting {plugin_name} from {plugin}")
-                    plugin_instance.on_plugin_shutdown(plugin)
+                plugin_instance.on_plugin_event(name)
 
     def _notify_plugin_dependencies(self, name: str) -> None:
         """ Notify PiePlugins dependencies """
@@ -250,8 +237,8 @@ class PluginManager(BaseManager):
         for plugin in required_plugins + optional_plugins:
             if plugin in self._plugin_registry:
                 if self._plugin_availability.get(plugin, False):
-                    self._logger.debug(f"{plugin_instance.type.value.capitalize()} {plugin} has already loaded")
-                    plugin_instance.on_plugin_available(plugin)
+                    self._logger.debug(f"Plugin {plugin} has already loaded")
+                    plugin_instance.on_plugin_event(plugin)
 
     def _update_plugin_info(
         self,
@@ -324,7 +311,7 @@ class PluginManager(BaseManager):
                         f"Notifying {plugin_instance.type.value.capitalize()} "
                         f"that {plugin_name} is going to be turned off"
                     )
-                    plugin_instance.on_plugin_shutdown(plugin_name)
+                    plugin_instance.on_plugin_event(plugin_name, "plugin_shutdown")
 
     def _shutdown_plugin(self, plugin_name: str):
         """ Shutdown a plugin from its dependencies """
@@ -337,7 +324,7 @@ class PluginManager(BaseManager):
             if plugin in self._plugin_registry:
                 if self._plugin_availability.get(plugin, False):
                     self._logger.info(f"Shutting down {plugin_name} from {plugin}")
-                    plugin_instance.on_plugin_shutdown(plugin)
+                    plugin_instance.on_plugin_event(plugin, "plugin_shutdown")
 
     # PluginManager public methods
 

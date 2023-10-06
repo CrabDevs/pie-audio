@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from piekit.utils.files import read_json
 from piekit.globals import Global
-from piekit.managers.managers import PluginBaseManager
+from piekit.utils.files import read_json
 from piekit.managers.registry import Managers
 from piekit.managers.structs import SysManager, Section
+from piekit.managers.managers import BaseManager, PluginManagerMixin
 
 
-class LocaleManager(PluginBaseManager):
+class LocaleManager(BaseManager, PluginManagerMixin):
     name = SysManager.Locales
 
     def __init__(self) -> None:

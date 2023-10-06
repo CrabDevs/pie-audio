@@ -1,5 +1,5 @@
 from piekit.managers.structs import SysManager
-from piekit.managers.managers import ReferenceManager
+from piekit.managers.managers import ReferenceManagerMixin
 
 
-ShortcutsManager = ReferenceManager(SysManager.Shortcuts)
+ShortcutsManager = ReferenceManagerMixin(SysManager.Shortcuts)

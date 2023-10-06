@@ -1,6 +1,7 @@
 """
 ContentTable API
 """
+
 from __feature__ import snake_case
 
 import ffmpeg
@@ -19,7 +20,7 @@ from piekit.managers.structs import Section
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
 
-from models import MediaFile, Metadata, FileInfo, Codec
+from pieapp.structs.media import MediaFile, Metadata, FileInfo, Codec
 
 
 class Signals(QObject):
@@ -43,7 +44,7 @@ class Worker(QRunnable):
         """ Call the `subprocess.Popen` to execute ffprobe """
         try:
             probe_results: list[MediaFile] = []
-            for file in self._chunk:
+            for index, file in enumerate(self._chunk):
                 probe_result = Dotty(ffmpeg.probe(file, self._command))
                 if probe_result:
                     probe_result["stream"] = probe_result["streams"][0]
@@ -72,6 +73,7 @@ class Worker(QRunnable):
                         codec=codec,
                     )
                     media_file = MediaFile(
+                        index=index,
                         info=info,
                         metadata=metadata
                     )
@@ -79,8 +81,8 @@ class Worker(QRunnable):
 
             self.signals.completed.emit(probe_results)
 
-        except Exception as e:
-            self._logger.critical(str(e))
+        except ffmpeg.Error as e:
+            self._logger.critical(e.stderr)
 
 
 class ConverterAPI(
@@ -119,10 +121,10 @@ class ConverterAPI(
         if not selected_files:
             return
 
-        chunks = self._split_by_chunks(selected_files[0], self._chunk_size)
+        # chunks = self._split_by_chunks(selected_files[0], self._chunk_size)
         pool = QThreadPool.global_instance()
 
-        for chunk in chunks:
+        for chunk in selected_files:
             filtered_chunk = [i for i in chunk if i not in self._current_files]
             self._current_files.extend(filtered_chunk)
 
