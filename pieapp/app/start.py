@@ -3,8 +3,9 @@ from __feature__ import snake_case
 
 import os
 import sys
+from confstar import Lock, Max, Min
 
-from piekit.globals import Global, Lock, Max, Min
+from piekit.globals import Global
 from pieapp.wizard.wizard import SetupWizard
 from piekit.managers.registry import Managers
 from piekit.utils.modules import is_debug
