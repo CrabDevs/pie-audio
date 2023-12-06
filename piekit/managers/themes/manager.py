@@ -57,14 +57,14 @@ class ThemeManager(BaseManager):
 
     def _get_themes(self) -> list[str]:
         themes: list[str] = []
-        for folder in (Global.APP_ROOT / Global.ASSETS_FOLDER / Global.THEMES_FOLDER).iterdir():
+        for folder in (Global.APP_ROOT / Global.ASSETS_FOLDER).iterdir():
             if folder.is_dir() and not folder.name.startswith("__"):
                 themes.append(folder.name)
 
         return themes
 
     def _load_app_theme(self) -> None:
-        theme_folder = Global.APP_ROOT / Global.ASSETS_FOLDER / Global.THEMES_FOLDER / self._current_theme
+        theme_folder = Global.APP_ROOT / Global.ASSETS_FOLDER / self._current_theme
         for file in theme_folder.rglob("*.*"):
             if not self._check_file(file):
                 continue
@@ -87,7 +87,7 @@ class ThemeManager(BaseManager):
             plugins_folder (pathlib.Path): Plugins folder
         """
         for plugin_folder in plugins_folder.iterdir():
-            theme_folder = plugin_folder / Global.ASSETS_FOLDER / Global.THEMES_FOLDER / self._current_theme
+            theme_folder = plugin_folder / Global.ASSETS_FOLDER / self._current_theme
             if theme_folder.exists():
                 icons_folder = theme_folder / "icons"
             else:
