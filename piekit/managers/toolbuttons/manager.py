@@ -4,7 +4,7 @@ from typing import Union
 
 from PySide6.QtWidgets import QToolButton
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.structs import SysManager
 from piekit.managers.base import BaseManager
 from piekit.exceptions import PieException
@@ -19,7 +19,7 @@ class ToolButtonManager(BaseManager):
 
     def add_tool_button(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         name: str,
         button: QToolButton
     ) -> QToolButton:
@@ -33,7 +33,7 @@ class ToolButtonManager(BaseManager):
 
         return button
 
-    def get_tool_button(self, section: Union[str, Section], name: str) -> QToolButton:
+    def get_tool_button(self, section: Union[str, Scope], name: str) -> QToolButton:
         if section not in self._buttons:
             raise PieException(f"Section {section} doesn't exist")
 
@@ -42,7 +42,7 @@ class ToolButtonManager(BaseManager):
 
         return self._buttons[section][name]
 
-    def get_tool_buttons(self, section: Union[str, Section], *names: str) -> list[QToolButton]:
+    def get_tool_buttons(self, section: Union[str, Scope], *names: str) -> list[QToolButton]:
         return [self.get_tool_button(section, n) for n in names]
 
     addToolButton = add_tool_button

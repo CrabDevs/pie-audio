@@ -5,7 +5,7 @@ from __feature__ import snake_case
 from piekit.widgets.spacer import Spacer
 from piekit.globals.loader import Global
 from piekit.managers.registry import Managers
-from piekit.managers.structs import Section, SysManager
+from piekit.managers.structs import Scope, SysManager
 from piekit.managers.themes.mixins import ThemeAccessorMixin
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
@@ -26,8 +26,8 @@ class AppConfigPage(
     ThemeAccessorMixin,
     ConfigPage
 ):
-    name = Section.Root
-    section = Section.Root
+    name = Scope.Root
+    section = Scope.Root
 
     def init(self) -> None:
         # TODO: Replace all the layouts with the QFormLayout yeah
@@ -41,7 +41,7 @@ class AppConfigPage(
         self._ffmpeg_line_edit = QLineEdit()
         self._ffmpeg_line_edit.set_object_name("SettingsLineEdit")
         self._ffmpeg_line_edit.insert(
-            self.get_config("ffmpeg.root", scope=Section.Root, section=Section.User)
+            self.get_config("ffmpeg.root", scope=Scope.Root, section=Scope.User)
         )
         self._ffmpeg_line_edit.add_action(
             self._ffmpeg_line_edit_action, QLineEdit.ActionPosition.TrailingPosition
@@ -51,8 +51,8 @@ class AppConfigPage(
         self._cur_locale = self.get_config(
             key="locale.locale",
             default=Global.DEFAULT_LOCALE,
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         )
         self._locales_reversed = {v: k for (k, v) in self._locales.items()}
 
@@ -66,7 +66,7 @@ class AppConfigPage(
         self._theme_cbox = QComboBox()
         self._theme_cbox.add_items(themes)
         self._theme_cbox.set_current_text(self.get_config(
-            "assets.theme", scope=Section.Root, section=Section.User
+            "assets.theme", scope=Scope.Root, section=Scope.User
         ))
         self._theme_cbox.currentIndexChanged.connect(self._theme_cbox_connect)
 
@@ -88,8 +88,8 @@ class AppConfigPage(
     def _theme_cbox_connect(self) -> None:
         new_theme = self._theme_cbox.current_text()
         self.set_config(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             key="assets.theme",
             data=new_theme,
             temp=True
@@ -99,8 +99,8 @@ class AppConfigPage(
     def _locales_cbox_connect(self) -> None:
         new_locale = self._locales_reversed.get(self._locales_cbox.current_text())
         self.set_config(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             key="locale.locale",
             data=new_locale,
             temp=True
@@ -116,12 +116,12 @@ class AppConfigPage(
 
         directory_path = QDir.to_native_separators(ffmpeg_directory)
         if directory_path:
-            self.set_config("ffmpeg.path", directory_path, section=Section.User, temp=True)
+            self.set_config("ffmpeg.path", directory_path, section=Scope.User, temp=True)
 
         self.set_modified(True)
 
     def accept(self) -> None:
-        self.save_config(scope=Section.Root, section=Section.User, temp=True)
+        self.save_config(scope=Scope.Root, section=Scope.User, temp=True)
         self.set_modified(False)
 
     def cancel(self) -> None:

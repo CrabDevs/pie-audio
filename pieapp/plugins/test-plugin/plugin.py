@@ -11,7 +11,7 @@ from pieapp.structs.workbench import WorkbenchItem
 
 from piekit.globals import Global
 from piekit.utils.logger import logger
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.plugins.plugins import PiePlugin
 from piekit.managers.base import BaseManager
 from piekit.managers.registry import Managers
@@ -73,7 +73,7 @@ class TestPlugin(
             section=f"test-plugin-toolbutton",
             name="call-dialog",
             text="Call inner dialog",
-            icon=self.get_svg_icon("icons/mood.svg", section=Section.Shared),
+            icon=self.get_svg_icon("icons/mood.svg", section=Scope.Shared),
             tooltip="Call inner dialog",
             triggered=self.test_show_inner_dialog
         )
@@ -126,14 +126,14 @@ class TestPlugin(
     @on_plugin_event(target=Plugin.MenuBar)
     def on_menu_bar_available(self) -> None:
         test_menu = self.add_menu(
-            parent=self.get_menu_bar(Section.Shared),
-            section=Section.Shared,
+            parent=self.get_menu_bar(Scope.Shared),
+            section=Scope.Shared,
             name=MainMenu.Test,
             text=self.translate("Test"),
         )
 
         self.add_menu_item(
-            section=Section.Shared,
+            section=Scope.Shared,
             menu=MainMenu.Test,
             name="test-plugin",
             text=self.translate("Run test plugin"),
@@ -141,7 +141,7 @@ class TestPlugin(
             icon=self.get_plugin_icon(),
         )
 
-        self.get_menu_bar(Section.Shared).add_menu(test_menu)
+        self.get_menu_bar(Scope.Shared).add_menu(test_menu)
 
     # Test methods
 

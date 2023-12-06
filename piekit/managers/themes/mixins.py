@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon
 
 from piekit.managers.registry import Managers
 from piekit.managers.themes.utils import as_svg
-from piekit.managers.structs import SysManager, Section
+from piekit.managers.structs import SysManager, Scope
 
 
 class ThemeAccessorMixin:
@@ -16,7 +16,7 @@ class ThemeAccessorMixin:
         self,
         key: Any,
         default: Any = None,
-        section: Union[str, Section] = Section.Shared
+        section: Union[str, Scope] = Scope.Shared
     ) -> Any:
         return Managers(SysManager.Themes).get(section or self.section, key, default)
 
@@ -24,7 +24,7 @@ class ThemeAccessorMixin:
         self,
         key: Any,
         default: Any = None,
-        section: Union[str, Section] = Section.Shared
+        section: Union[str, Scope] = Scope.Shared
     ) -> QIcon:
         return QIcon(Managers(SysManager.Themes).get(section or self.section, key, default))
 
@@ -33,7 +33,7 @@ class ThemeAccessorMixin:
         key: Any,
         color: str = "#dbdbdb",
         default: Any = None,
-        section: Union[str, Section] = Section.Shared
+        section: Union[str, Scope] = Scope.Shared
     ) -> QIcon:
         icon_path = Managers(SysManager.Themes).get(section or self.section, key, default)
         return as_svg(icon_path, color)

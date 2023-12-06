@@ -7,7 +7,7 @@ from dotty_dict import Dotty
 from piekit.globals import Global
 from piekit.exceptions import PieException
 from piekit.managers.base import BaseManager
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.structs import SysManager
 from piekit.utils.files import read_json, write_json
 from piekit.observers.filesystem import FileSystemObserver
@@ -26,15 +26,15 @@ class ConfigManager(BaseManager):
 
     def init(self) -> None:
         # Read app/core configurations
-        self._load_app_configs(Global.APP_ROOT / Global.CONFIGS_FOLDER, Section.Inner)
-        self._load_app_configs(Global.USER_ROOT / Global.CONFIGS_FOLDER, Section.User)
+        self._load_app_configs(Global.APP_ROOT / Global.CONFIGS_FOLDER, Scope.Inner)
+        self._load_app_configs(Global.USER_ROOT / Global.CONFIGS_FOLDER, Scope.User)
         self._load_plugins_configs(Global.APP_ROOT / Global.PLUGINS_FOLDER)
         self._load_plugins_configs(Global.APP_ROOT / Global.PLUGINS_FOLDER)
 
-    def _load_app_configs(self, folder: Path, section: Union[str, Section] = None) -> None:
-        self._configuration[Section.Root] = {section: {"__FOLDER__": folder}}
+    def _load_app_configs(self, folder: Path, section: Union[str, Scope] = None) -> None:
+        self._configuration[Scope.Root] = {section: {"__FOLDER__": folder}}
         if (folder / Global.CONFIG_FILE_NAME).exists():
-            self._configuration[Section.Root][section].update(
+            self._configuration[Scope.Root][section].update(
                 **read_json(str(folder / Global.CONFIG_FILE_NAME))
             )
             self._observer.add_handler(str(folder), str(folder.name))
@@ -44,19 +44,19 @@ class ConfigManager(BaseManager):
             # Read plugin's user configuration file
             user_folder: Path = Global.USER_ROOT / Global.CONFIGS_FOLDER / plugin_folder.name
             self._configuration[plugin_folder.name] = {
-                Section.Inner: {"__FOLDER__": plugin_folder},
-                Section.User: {"__FOLDER__": user_folder}
+                Scope.Inner: {"__FOLDER__": plugin_folder},
+                Scope.User: {"__FOLDER__": user_folder}
             }
 
             if (plugin_folder / Global.CONFIG_FILE_NAME).exists():
                 # Read plugin's inner configuration file
-                self._configuration[plugin_folder.name][Section.Inner].update({
+                self._configuration[plugin_folder.name][Scope.Inner].update({
                     **read_json(plugin_folder / Global.CONFIG_FILE_NAME),
                 })
                 self._observer.add_handler(str(plugin_folder), str(plugin_folder.name))
 
             if (plugin_folder / Global.CONFIG_FILE_NAME).exists():
-                self._configuration[plugin_folder.name][Section.User].update({
+                self._configuration[plugin_folder.name][Scope.User].update({
                     **read_json(plugin_folder / Global.CONFIG_FILE_NAME),
                 })
                 self._observer.add_handler(str(user_folder), str(user_folder.name))
@@ -68,8 +68,8 @@ class ConfigManager(BaseManager):
 
     def get(
         self,
-        scope: Union[str, Section.Root] = Section.Root,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = Scope.Root,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
         key: Any = None,
         default: Any = None,
         temp: bool = False
@@ -93,8 +93,8 @@ class ConfigManager(BaseManager):
 
     def set(
         self,
-        scope: Union[str, Section.Root] = Section.Root,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = Scope.Root,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
         key: Any = None,
         data: Any = None,
         temp: bool = False
@@ -131,8 +131,8 @@ class ConfigManager(BaseManager):
 
     def delete(
         self,
-        scope: Union[str, Section.Root] = Section.Root,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = Scope.Root,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
         key: Any = None
     ) -> None:
         """
@@ -152,8 +152,8 @@ class ConfigManager(BaseManager):
 
     def restore(
         self,
-        scope: Union[str, Section.Root],
-        section: Union[Section.Inner, Section.User],
+        scope: Union[str, Scope.Root],
+        section: Union[Scope.Inner, Scope.User],
         key: Any = None
     ) -> None:
         """
@@ -167,8 +167,8 @@ class ConfigManager(BaseManager):
 
     def save(
         self,
-        scope: Union[str, Section.Root],
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root],
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
         temp: bool = False,
         create: bool = False
     ) -> None:

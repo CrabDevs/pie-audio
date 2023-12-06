@@ -4,7 +4,7 @@ from typing import Union
 
 from PySide6.QtGui import QAction
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.structs import SysManager
 from piekit.managers.base import BaseManager
 from piekit.exceptions import PieException
@@ -20,7 +20,7 @@ class ActionManager(BaseManager):
 
     def add_action(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         name: str,
         action: QAction
     ) -> QAction:
@@ -36,7 +36,7 @@ class ActionManager(BaseManager):
 
     def get_action(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         name: str
     ) -> QAction:
         if section not in self._actions:
@@ -49,7 +49,7 @@ class ActionManager(BaseManager):
 
     def get_actions(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         *names: str
     ) -> list[QAction]:
         return [self.get_action(section, n) for n in names]

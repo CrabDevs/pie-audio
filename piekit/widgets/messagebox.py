@@ -4,12 +4,12 @@ from __feature__ import snake_case
 from PySide6.QtWidgets import QMessageBox, QCheckBox, QVBoxLayout, QSpacerItem
 from PySide6.QtWidgets import QPushButton
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.locales.mixins import LocalesAccessorMixin
 
 
 class MessageCheckBox(QMessageBox, LocalesAccessorMixin):
-    section = Section.Shared
+    section = Scope.Shared
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)

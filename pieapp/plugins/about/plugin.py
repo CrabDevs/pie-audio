@@ -7,7 +7,7 @@ from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QLabel, QGridLayout, QPushButton, QDialog
 
 from pieapp.structs.menus import MainMenu
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.plugins.plugins import PiePlugin
 from pieapp.structs.plugins import Plugin
 from piekit.managers.menus.mixins import MenuAccessorMixin
@@ -65,7 +65,7 @@ class About(
     @on_plugin_event(target=Plugin.MenuBar)
     def on_menu_bar_available(self) -> None:
         self.add_menu_item(
-            section=Section.Shared,
+            section=Scope.Shared,
             menu=MainMenu.Help,
             name="about",
             text=self.translate("About"),

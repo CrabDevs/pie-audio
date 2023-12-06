@@ -5,7 +5,7 @@ from pieapp.structs.plugins import Plugin
 from piekit.managers.menus.mixins import MenuAccessorMixin
 from piekit.plugins.plugins import PiePlugin
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.themes.mixins import ThemeAccessorMixin
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
@@ -21,24 +21,24 @@ class MainMenuBar(
 
     def init(self) -> None:
         self._menu_bar = self.add_menu_bar(
-            name=Section.Shared,
+            name=Scope.Shared,
         )
         self._menu_bar.set_object_name("MainMenuBar")
 
         self._file_menu = self.add_menu(
-            section=Section.Shared,
+            section=Scope.Shared,
             parent=self._menu_bar,
             name=MainMenu.File,
             text=self.translate("File"),
         )
         self._help_menu = self.add_menu(
-            section=Section.Shared,
+            section=Scope.Shared,
             parent=self._menu_bar,
             name=MainMenu.Help,
             text=self.translate("Help")
         )
         self.add_menu_item(
-            section=Section.Shared,
+            section=Scope.Shared,
             menu=MainMenu.File,
             name=MainMenuItem.Exit,
             text=self.translate("Exit"),

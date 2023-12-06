@@ -38,21 +38,21 @@ class SysManager:
     Layouts = "layouts"
     
 
-class Section:
+class Scope:
     """
-    Configuration categories/sections
+    This structure is designed to separate scopes in registries.
     """
 
-    # Application/root scope
+    # Root/application scope
     Root = "root"
     
-    # Plugin section name
+    # Plugin scope
     Inner = "inner"
 
-    # User/third-party section name
+    # User scope
     User = "user"
     
-    # Shared access section
+    # Shared scope
     Shared = "shared"
 
 

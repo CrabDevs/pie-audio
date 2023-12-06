@@ -4,7 +4,7 @@ from typing import Union
 
 from PySide6.QtWidgets import QWidget
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.structs import SysManager
 from piekit.managers.base import BaseManager
 from piekit.exceptions import PieException
@@ -23,7 +23,7 @@ class ToolBarManager(BaseManager):
 
     def add_toolbar(
         self,
-        name: Union[str, Section],
+        name: Union[str, Scope],
         toolbar: PieToolBar
     ) -> PieToolBar:
         if name in self._toolbars:
@@ -35,7 +35,7 @@ class ToolBarManager(BaseManager):
     
     def add_item(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         name: str,
         item: QWidget
     ) -> QWidget:
@@ -50,7 +50,7 @@ class ToolBarManager(BaseManager):
 
     def get_item(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         name: str
     ) -> QWidget:
         if section not in self._items:
@@ -63,12 +63,12 @@ class ToolBarManager(BaseManager):
 
     def get_items(
         self,
-        section: Union[str, Section],
+        section: Union[str, Scope],
         *names: str
     ) -> list[QWidget]:
         return [self.get_item(section, n) for n in names]
 
-    def get_toolbar(self,  name: Union[str, Section]) -> PieToolBar:
+    def get_toolbar(self,  name: Union[str, Scope]) -> PieToolBar:
         if name not in self._toolbars:
             raise PieException(f"ToolBar {name} not found")
 
@@ -76,7 +76,7 @@ class ToolBarManager(BaseManager):
 
     def get_toolbars(
         self,
-        *names: Union[str, Section],
+        *names: Union[str, Scope],
     ) -> list[PieToolBar]:
         return [self.get_toolbar(n) for n in names]
 

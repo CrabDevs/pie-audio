@@ -5,7 +5,7 @@ from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QWidget
 
 from piekit.managers.registry import Managers
-from piekit.managers.structs import SysManager, Section
+from piekit.managers.structs import SysManager, Scope
 from piekit.widgets.toolbars import PieToolBar
 
 
@@ -17,7 +17,7 @@ class ToolBarAccessorMixin:
         name: str = None
     ) -> PieToolBar:
         toolbar = PieToolBar(parent=parent, name=name)
-        return Managers(SysManager.ToolBars).add_toolbar(name or Section.Shared, toolbar)
+        return Managers(SysManager.ToolBars).add_toolbar(name or Scope.Shared, toolbar)
 
     def add_toolbar_item(
         self,
@@ -30,7 +30,7 @@ class ToolBarAccessorMixin:
         manager = Managers(SysManager.ToolBars)
         toolbar_instance: PieToolBar = manager.get_toolbar(toolbar)
         toolbar_instance.add_toolbar_item(name, item, after, before)
-        return manager.add_item(toolbar or Section.Shared, name, item)
+        return manager.add_item(toolbar or Scope.Shared, name, item)
 
     def get_toolbar_item(self, section: str, name: str) -> QWidget:
         return Managers(SysManager.ToolBars).get_item(section, name)

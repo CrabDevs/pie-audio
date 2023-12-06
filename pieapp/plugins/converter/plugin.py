@@ -16,7 +16,7 @@ from pieapp.structs.menus import MainMenu
 from pieapp.structs.menus import MainMenuItem
 from pieapp.structs.workbench import WorkbenchItem
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.plugins.decorators import on_plugin_event
 from piekit.widgets.menus import INDEX_START
 from piekit.plugins.plugins import PiePlugin
@@ -200,7 +200,7 @@ class Converter(
         Add open file element in the "File" menu
         """
         self.add_menu_item(
-            section=Section.Shared,
+            section=Scope.Shared,
             menu=MainMenu.File,
             name=MainMenuItem.OpenFiles,
             text=self.translate("Open file"),

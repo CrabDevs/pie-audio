@@ -16,7 +16,7 @@ from piekit.managers.toolbars.mixins import ToolBarAccessorMixin
 from piekit.managers.toolbuttons.mixins import ToolButtonAccessorMixin
 from piekit.plugins.types import Error
 from piekit.managers.registry import Managers
-from piekit.managers.structs import Section, SysManager
+from piekit.managers.structs import Scope, SysManager
 from piekit.widgets.messagebox import MessageCheckBox
 
 
@@ -74,7 +74,7 @@ class QuitDialogMixin(ConfigAccessorMixin, LocalesAccessorMixin):
     * `ConfigAccessorMixin` with specified `exit_dialog_section` and `exit_dialog_key`
     * `LocalesAccessorMixin`
     """
-    exit_dialog_section: Union[str, Section] = Section.User
+    exit_dialog_section: Union[str, Scope] = Scope.User
     exit_dialog_key: str = "ui.show_exit_dialog"
 
     def close_event(self, event) -> None:
@@ -87,7 +87,7 @@ class QuitDialogMixin(ConfigAccessorMixin, LocalesAccessorMixin):
         show_exit_dialog = self.get_config(
             key="ui.show_exit_dialog",
             default=True,
-            scope=Section.Root,
+            scope=Scope.Root,
             section=self.exit_dialog_section
         )
         if cancellable and show_exit_dialog:
@@ -95,8 +95,8 @@ class QuitDialogMixin(ConfigAccessorMixin, LocalesAccessorMixin):
             message_box.set_check_box_text(self.translate("Don't show this message again?"))
             message_box.exec()
             if message_box.is_checked():
-                self.set_config(self.exit_dialog_key, False, scope=Section.Root, section=Section.User)
-                self.save_config(Section.Root, self.exit_dialog_section)
+                self.set_config(self.exit_dialog_key, False, scope=Scope.Root, section=Scope.User)
+                self.save_config(Scope.Root, self.exit_dialog_section)
 
             if message_box.clicked_button() == message_box.no_button:
                 return False

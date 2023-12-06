@@ -1,6 +1,6 @@
 from typing import Union
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 
 from piekit.managers.confpages.structs import ConfigPage
 
@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QWidget, QPushButton, QGridLayout
 
 class TestPluginConfigPage(ConfigPage):
     name = "test-configuration-page"
-    root = Section.Root
+    root = Scope.Root
 
     def init(self) -> None:
         self._main_grid = QGridLayout()

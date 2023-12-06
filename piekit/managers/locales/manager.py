@@ -4,7 +4,7 @@ from piekit.utils.files import read_json
 from piekit.globals import Global
 from piekit.managers.base import BaseManager
 from piekit.managers.registry import Managers
-from piekit.managers.structs import SysManager, Section
+from piekit.managers.structs import SysManager, Scope
 
 
 class LocaleManager(BaseManager):
@@ -12,8 +12,8 @@ class LocaleManager(BaseManager):
 
     def __init__(self) -> None:
         self._locale: str = Managers(SysManager.Configs).get(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             key="locale.locale",
             default=Global.DEFAULT_LOCALE
         )
@@ -30,7 +30,7 @@ class LocaleManager(BaseManager):
         self._roots.add(Global.APP_ROOT)
 
         for file in (Global.APP_ROOT / Global.LOCALES_FOLDER / self._locale).rglob("*.json"):
-            section = Section.Shared
+            section = Scope.Shared
             if not self._translations.get(section):
                 self._translations[section] = {}
 

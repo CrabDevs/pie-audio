@@ -27,7 +27,7 @@ from piekit.utils.logger import logger
 from piekit.plugins import PiePluginAPI
 from piekit.plugins.utils import get_plugin
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
 
@@ -124,31 +124,31 @@ class ConverterAPI(
         self._chunk_size = self.get_config(
             key="ffmpeg.chunk_size",
             default=10,
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
         )
         self._ffmpeg_command = Path(
             self.get_config(
                 key="ffmpeg.ffmpeg",
                 default="ffmpeg",
-                scope=Section.Root,
-                section=Section.User
+                scope=Scope.Root,
+                section=Scope.User
             )
         )
         self._ffprobe_command = Path(
             self.get_config(
                 key="ffmpeg.ffprobe",
                 default="ffprobe",
-                scope=Section.Root,
-                section=Section.User
+                scope=Scope.Root,
+                section=Scope.User
             )
         )
         self._temp_folder = Path(
             self.get_config(
                 key="ffmpeg.temp_folder",
                 default=Global.USER_ROOT / Global.DEFAULT_TEMP_FOLDER_NAME,
-                scope=Section.Root,
-                section=Section.User
+                scope=Scope.Root,
+                section=Scope.User
             )
         )
 

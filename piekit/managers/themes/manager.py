@@ -13,7 +13,7 @@ from piekit.utils.logger import logger
 from piekit.utils.core import get_application
 from piekit.utils.modules import import_by_path
 
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.registry import Managers
 from piekit.managers.structs import SysManager
 from piekit.managers.base import BaseManager
@@ -45,8 +45,8 @@ class ThemeManager(BaseManager):
             * template.qss - style sheet template file
         """
         self._current_theme = Managers(SysManager.Configs).get(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             key="assets.theme",
             default=Global.DEFAULT_THEME
         )
@@ -69,7 +69,7 @@ class ThemeManager(BaseManager):
             if not self._check_file(file):
                 continue
 
-            self._add_file(Section.Shared, theme_folder, file)
+            self._add_file(Scope.Shared, theme_folder, file)
 
         self._stylesheet_props["THEME_ROOT"] = theme_folder.as_posix()
 
@@ -105,7 +105,7 @@ class ThemeManager(BaseManager):
             self._load_palette(theme_folder)
             self._app.set_style_sheet(self._stylesheet)
 
-    def _add_file(self, section: Union[str, Section], theme_folder: Path, file: Path) -> None:
+    def _add_file(self, section: Union[str, Scope], theme_folder: Path, file: Path) -> None:
         """
         Add file to the files registry
 
@@ -180,7 +180,7 @@ class ThemeManager(BaseManager):
             self._app.set_palette(palette)
 
     @lru_cache
-    def get(self, section: Union[str, Section], key: str, default: Any = None) -> Any:
+    def get(self, section: Union[str, Scope], key: str, default: Any = None) -> Any:
         """
         Get icon
 

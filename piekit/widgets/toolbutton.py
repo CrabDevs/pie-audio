@@ -6,7 +6,7 @@ from __feature__ import snake_case
 from PySide6.QtWidgets import QToolButton
 
 from piekit.globals import Global
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 
 
 def create_tool_button(

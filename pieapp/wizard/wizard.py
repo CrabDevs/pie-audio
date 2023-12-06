@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QFileDialog, QStyle
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
 
-from piekit.managers.structs import SysManager, Section
+from piekit.managers.structs import SysManager, Scope
 from piekit.utils.core import restart_application
 
 from piekit.managers.registry import Managers
@@ -22,7 +22,7 @@ class LocaleWizardPage(
     LocalesAccessorMixin,
     QtWidgets.QWizardPage
 ):
-    section = Section.Shared
+    section = Scope.Shared
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -32,8 +32,8 @@ class LocaleWizardPage(
         self._cur_locale = self.get_config(
             key="locale.locale",
             default=Global.DEFAULT_LOCALE,
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         )
         self._locales_reversed = {v: k for (k, v) in self._locales.items()}
 
@@ -56,12 +56,12 @@ class LocaleWizardPage(
         self.set_config(
             key="locale",
             data={"locale": new_locale},
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         )
         self.save_config(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             create=True
         )
 
@@ -76,7 +76,7 @@ class ThemeWizardPage(
     LocalesAccessorMixin,
     QtWidgets.QWizardPage
 ):
-    section = Section.Shared
+    section = Scope.Shared
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -89,8 +89,8 @@ class ThemeWizardPage(
         self._cur_theme = self.get_config(
             key="assets.theme",
             default=Managers(SysManager.Themes).get_theme(),
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         )
 
         theme_label = QtWidgets.QLabel(self.translate("Select theme"))
@@ -104,14 +104,14 @@ class ThemeWizardPage(
     def get_result(self):
         new_theme = self.combo_box.current_text()
         self.set_config(
-            scope=Section.Root,
-            section=Section.User,
+            scope=Scope.Root,
+            section=Scope.User,
             key="assets.theme",
             data=new_theme
         )
         self.save_config(
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         )
 
         if self._cur_theme != new_theme:
@@ -125,7 +125,7 @@ class ConverterWizardPage(
     ConfigAccessorMixin,
     QtWidgets.QWizardPage
 ):
-    section = Section.Shared
+    section = Scope.Shared
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -164,8 +164,8 @@ class ConverterWizardPage(
 
         if directory_path:
             self.set_config(
-                scope=Section.Root,
-                section=Section.User,
+                scope=Scope.Root,
+                section=Scope.User,
                 key="ffmpeg.root",
                 data=directory_path
             )
@@ -177,15 +177,15 @@ class ConverterWizardPage(
                                             f"Please, download ffmpeg bundle from https://ffmpeg.org/download.html")
 
                 self.set_config(
-                    scope=Section.Root,
-                    section=Section.User,
+                    scope=Scope.Root,
+                    section=Scope.User,
                     key=f"ffmpeg.{binary.stem!s}",
                     data=str(directory_path / binary)
                 )
 
             self.save_config(
-                scope=Section.Root,
-                section=Section.User
+                scope=Scope.Root,
+                section=Scope.User
             )
             self.ffmpeg_path = directory_path
             self.line_edit.set_text(directory_path)
@@ -199,7 +199,7 @@ class FinishWizardPage(
     LocalesAccessorMixin,
     QtWidgets.QWizardPage
 ):
-    section = Section.Shared
+    section = Scope.Shared
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -216,7 +216,7 @@ class SetupWizard(QtWidgets.QWizard, LocalesAccessorMixin):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.set_window_title(self.translate("Setup Wizard", Section.Shared))
+        self.set_window_title(self.translate("Setup Wizard", Scope.Shared))
         self.set_window_icon(self.style().standard_icon(QStyle.StandardPixmap.SP_DialogHelpButton))
 
         if os.name == "nt":

@@ -15,7 +15,7 @@ from piekit.managers.confpages.structs import CustomTreeWidgetItem, ConfigPage
 
 from piekit.widgets.spacer import Spacer
 from piekit.plugins.plugins import PiePlugin
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.menus.mixins import MenuAccessorMixin
 from piekit.managers.themes.mixins import ThemeAccessorMixin
 from piekit.managers.configs.mixins import ConfigAccessorMixin
@@ -115,7 +115,7 @@ class Settings(
     @on_plugin_event(target=Plugin.MenuBar)
     def on_menu_bar_available(self) -> None:
         self.add_menu_item(
-            section=Section.Shared,
+            section=Scope.Shared,
             menu=MainMenu.File,
             name="settings",
             text=self.translate("Settings"),

@@ -1,7 +1,7 @@
 from typing import Any, Union
 
 from piekit.managers.registry import Managers
-from piekit.managers.structs import SysManager, Section
+from piekit.managers.structs import SysManager, Scope
 
 
 class ConfigAccessorMixin:
@@ -14,8 +14,8 @@ class ConfigAccessorMixin:
         key: Any,
         default: Any = None,
         temp: bool = False,
-        scope: Union[str, Section.Root] = None,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = None,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
     ) -> Any:
         return Managers(SysManager.Configs).get(scope or self.name, section, key, default, temp=temp)
 
@@ -24,23 +24,23 @@ class ConfigAccessorMixin:
         key: Any,
         data: Any,
         temp: bool = False,
-        scope: Union[str, Section.Root] = None,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = None,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
     ) -> None:
         Managers(SysManager.Configs).set(scope or self.name, section, key, data, temp=temp)
 
     def delete_config(
         self,
         key: Any,
-        scope: Union[str, Section.Root] = None,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = None,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
     ) -> None:
         Managers(SysManager.Configs).delete(scope or self.name, section, key)
 
     def save_config(
         self,
-        scope: Union[str, Section.Root] = None,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = None,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
         temp: bool = False,
         create: bool = False
     ) -> None:
@@ -49,8 +49,8 @@ class ConfigAccessorMixin:
     def restore_config(
         self,
         key: Any = None,
-        scope: Union[str, Section.Root] = None,
-        section: Union[Section.Inner, Section.User] = Section.Inner,
+        scope: Union[str, Scope.Root] = None,
+        section: Union[Scope.Inner, Scope.User] = Scope.Inner,
     ) -> None:
         Managers(SysManager.Configs).restore(scope or self.name, section, key)
 

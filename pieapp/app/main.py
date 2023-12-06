@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QMainWindow, QGridLayout
 from piekit.globals import Global
 from pieapp.structs.layouts import Layout
 from piekit.managers.layouts.mixins import LayoutsAccessorMixin
-from piekit.managers.structs import Section
+from piekit.managers.structs import Scope
 from piekit.managers.themes.mixins import ThemeAccessorMixin
 from piekit.managers.configs.mixins import ConfigAccessorMixin
 from piekit.managers.locales.mixins import LocalesAccessorMixin
@@ -22,7 +22,7 @@ class MainWindow(
     QMainWindow,
 ):
     # Accessors section
-    section: str = Section.Shared
+    section: str = Scope.Shared
 
     # Signals
     sig_moved = Signal()
@@ -61,8 +61,8 @@ class MainWindow(
         self.resize(*self.get_config(
             key="ui.winsize",
             default=Global.DEFAULT_MIN_WINDOW_SIZE,
-            scope=Section.Root,
-            section=Section.User
+            scope=Scope.Root,
+            section=Scope.User
         ))
         self.set_window_title(
             f'{self.translate("Pie Audio • Simple Audio Editor")} '
