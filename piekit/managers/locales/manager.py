@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union
 
 from piekit.utils.files import read_json
 from piekit.globals import Global
@@ -53,11 +54,14 @@ class LocaleManager(BaseManager):
         self.shutdown()
         self.init()
 
-    def get(self, section: str, key: str) -> str:
+    def get(self, section: Union[str, Section], key: str) -> str:
         if section not in self._translations:
             return key
 
         return self._translations[section].get(key, key)
+
+    def get_scope(self, section: Union[str, Section]) -> dict[str, str]:
+        return self._translations[section]
 
     @property
     def locale(self):
