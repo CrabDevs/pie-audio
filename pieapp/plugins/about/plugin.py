@@ -64,13 +64,17 @@ class About(
 
     @on_plugin_event(target=Plugin.MenuBar)
     def on_menu_bar_available(self) -> None:
+        about_menu_item = create_action()
         self.add_menu_item(
-            section=Section.Shared,
-            menu=MainMenu.Help,
-            name="about",
-            text=self.translate("About"),
-            triggered=self.call,
-            icon=self.get_svg_icon("icons/help.svg"),
+            menu_name=MainMenu.Help,
+            item_name=self.name,
+            item_object=about_menu_item
+            # section=Section.Shared,
+            # menu=MainMenu.Help,
+            # name="about",
+            # text=self.translate("About"),
+            # triggered=self.call,
+            # icon=self.get_svg_icon("icons/help.svg"),
         )
 
     def get_plugin_icon(self) -> "QIcon":

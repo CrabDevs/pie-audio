@@ -8,6 +8,8 @@ from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenuBar, QMenu
 
 from piekit.exceptions import PieException
+from piekit.widgets.actions import PieAction
+
 
 INDEX_END = type("INDEX_END", (), {})
 INDEX_START = type("INDEX_START", (), {})
@@ -24,47 +26,37 @@ class PieMenu(QMenu):
         self._name = name
         self._text = text
 
-        self._items: dict[str, QAction] = {}
-        self._keys: list[Any] = list(self._items.keys())
+        self._actions_list: list = []
+        self._actions_dict: dict[str, QAction] = {}
 
         if text is not None:
             super().__init__(parent=parent, title=text)
         else:
             super().__init__(parent=parent)
 
-    def add_menu_item(
+    def add_item(
         self,
-        name: str,
-        text: str,
-        triggered: callable = None,
-        icon: QIcon = None,
+        action: PieAction,
         before: str = None,
-        index: Union[int, INDEX_START, INDEX_END] = None
-    ) -> QAction:
-        if name in self._items:
-            raise PieException(f"Menu item {name} already registered")
-
-        action = QAction(parent=self, text=text, icon=icon)
-        if triggered:
-            action.triggered.connect(triggered)
-
-        self._items[name] = action
-        self._keys.append(name)
+        after: str = None
+    ) -> PieAction:
+        self._actions_dict[action.action_id] = action
+        self._actions_list.append(action)
 
         if isinstance(index, INDEX_START):
-            index = self._items[self._keys[0]]
+            index = self._actions_dict[self._actions_list[0]]
             self.insert_action(index, action)
 
         elif isinstance(index, INDEX_END):
-            index = self._items[self._keys[-1]]
+            index = self._actions_dict[self._actions_list[-1]]
             self.insert_action(index, action)
 
         elif isinstance(index, int):
-            index = self._items[self._keys[index]]
+            index = self._actions_dict[self._actions_list[index]]
             self.insert_action(index, action)
 
         elif before:
-            before = self._items[before]
+            before = self._actions_dict[before]
             self.insert_action(before, action)
 
         else:
@@ -73,11 +65,11 @@ class PieMenu(QMenu):
         return action
 
     def get_item(self, name: str) -> QAction:
-        return self._items[name]
+        return self._actions_dict[name]
+
+    def get_items(self) -> list[QAction]:
+        return self._actions_list
 
     @property
     def name(self) -> str:
         return self._name
-
-    addMenuItem = add_menu_item
-    getItem = get_item
